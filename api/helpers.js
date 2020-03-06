@@ -8,6 +8,7 @@ module.exports = {
   getById,
   addUser,
   add,
+  update,
   findByUserName,
   findProjectByUserId,
   findCommentsByUserId,

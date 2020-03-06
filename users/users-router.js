@@ -74,40 +74,20 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.delete("/users/:id", restrict, async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const deleted = await authModel.remove(id);
-
-    if (deleted) {
-      res.json({ removed: deleted });
-    } else {
-      res.status(404).json({ message: "Could not find user with given ID" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: "Something went wrong check user-router" });
-  }
-});
-
-// router.put("/users/:id", (req, res) => {
-
-// })
-
 // router.get("/logout", (req, res) => {
-//   if (req.user) {
-//     req.user.destroy(err => {
+//   if (req.users) {
+//     req.users.destroy(err => {
 //       res.status(200).json("you have been knock out");
 //     });
 //   } else {
 //     res.status(400).json("your already logged out! your drunk go home!");
 //   }
 // });
-function genToken(user) {
+
+function genToken(users) {
   const payload = {
-    username: user.username,
-    subject: user.id,
-    department: user.department
+    username: users.username,
+    subject: users.id
   };
   const secret = "its a secret! dont tell anyone";
   const options = {

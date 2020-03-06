@@ -5,11 +5,18 @@ exports.up = function(knex) {
 
     tbl.text("description").notNullable();
     tbl.integer("vote").defaultTo(0);
+    tbl
+      .integer("created_by")
+      .notNullable()
+      .references("users")
+      .inTable("id")
+      .onUpdate("CASCADE")
+      .onDelete("CASCADE");
     // tbl
     //   .dateTime("date")
     //   .notNullable()
     //   .defaultTo(knex.raw("CURRENT_TIMESTAMP"));
-    tbl.string("state", 100).notNullable();
+    tbl.string("state", 20);
   });
 };
 

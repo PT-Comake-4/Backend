@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const secret = require("../secrets/secrets");
 
 module.exports = (req, res, next) => {
-  const token = req.headers.authorization;
+  const token = req.headers.Authorization;
 
   // see if there is a token
   // check if it is valid => rehash header + payload + secret and see if it matches our verify signature
