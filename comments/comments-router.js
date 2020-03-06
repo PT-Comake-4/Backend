@@ -20,27 +20,80 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   commentsModel
-    .findByCommentsId()
+    .getById(req.params.id)
     .then(comment => {
-      res.status(201).json(comment);
+      res.status(200).json(comment);
     })
-    .catch(err =>
-      res
-        .status(500)
-        .json({ message: "Check comment-router get section", ...err })
-    );
+    .catch(err => res.status(500).json(err));
 });
 
-function genToken(users) {
-  const payload = {
-    username: users.username,
-    subject: users.id
-  };
-  const secret = "its a secret! dont tell anyone";
-  const options = {
-    expiresIn: "2h"
-  };
-  return jwt.sign(payload, secrets.jwtSecret, options);
-}
+router.get("/users/:id", async (req, res) => {
+  try {
+    const projectsComments = await commentsModel.findprojectsComments(
+      req.params.id
+    );
 
+    if (projectsComments.length) {
+      const commentsIds = [];
+
+      projectsComments.forEach(comments => {
+        commentsIds.push(comments.id);
+      });
+
+      var projectIds = [];
+
+      await commentsIds.forEach(async (id, index, array) => {
+        const response = await commentsModel.getById(id);
+        projectIds.push(response.project_id);
+        if (index === array.length - 1) {
+          const result = projectsComments.map((comments, index) => {
+            return { ...comments, project_id: projectIds[index] };
+          });
+          res.status(200).json(result);
+        }
+      });
+    } else {
+      res
+        .status(404)
+        .json({ message: "No projectModel found for provided user id" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/projects/:id", async (req, res) => {
+  try {
+    const projectsComments = await commentsModel.findProjectComments(
+      req.params.id
+    );
+
+    if (projectsComments.length) {
+      const commentsIds = [];
+
+      projectsComments.forEach(comments => {
+        commentsIds.push(comments.id);
+      });
+
+      var projectIds = [];
+
+      await commentsIds.forEach(async (id, index, array) => {
+        const response = await commentsModel.getById(id);
+        projectIds.push(response.project_id);
+        if (index === array.length - 1) {
+          const result = projectsComments.map((comments, index) => {
+            return { ...comments, project_id: projectIds[index] };
+          });
+          res.status(200).json(result);
+        }
+      });
+    } else {
+      res
+        .status(404)
+        .json({ message: "No comments-router found for provided user id" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 module.exports = router;

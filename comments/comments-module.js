@@ -6,6 +6,8 @@ module.exports = {
   find,
   addComment,
   findCommentsByID,
+  findUsersComments,
+  findProjectComments,
   getById,
   update,
   remove,
@@ -30,8 +32,16 @@ function findCommentsByID([id]) {
     .first();
 }
 
+function findUsersComments(created_by) {
+  return db("comments").where({ created_by });
+}
+
+function findProjectComments(project_id) {
+  return db("comments").where({ project_id });
+}
+
 function getById(id) {
-  return db("users").where({ id });
+  return db("comments").where({ id });
 }
 
 async function update(changes, id) {

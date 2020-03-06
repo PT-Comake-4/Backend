@@ -6,6 +6,7 @@ module.exports = {
   addProject,
   findProjectByID,
   findByProjectName,
+  findUsersProjects,
   update,
   getById,
   remove,
@@ -45,6 +46,10 @@ function findByProjectName(project_name) {
     .first();
 }
 
+function findUsersProjects(created_by) {
+  return db("projects").where({ created_by });
+}
+
 async function update(changes, id) {
   const [updatedProject] = await db("projects")
     .where({ id })
@@ -54,7 +59,10 @@ async function update(changes, id) {
   return updatedProject;
 }
 function getById(id) {
-  return db("projects").where({ id });
+  return db("projects")
+    .select("*")
+    .where({ id })
+    .first();
 }
 
 function remove(id) {
@@ -72,7 +80,7 @@ function remove(id) {
 
 function findByProjectsId(id) {
   return db("projects as p") // FROM projects AS p
-    .join("projects as u", "u.id", "p.created_by") // INNER JOIN projects AS u ON u.id = p.created_by
+    .join("users as u", "u.id", "p.created_by") // INNER JOIN projects AS u ON u.id = p.created_by
     .where("p.created_by", id) // WHERE created_by = ?
 
     .select(
