@@ -1,0 +1,40 @@
+{
+  "name": "Backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PT-Comake-4/Backend.git"
+  },
+  "keywords": [],
+  "author": "Joshua Doan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PT-Comake-4/Backend/issues"
+  },
+  "homepage": "https://github.com/PT-Comake-4/Backend#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "connect-session-knex": "^1.5.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "helmet": "^3.21.3",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.20.10",
+    "knex-cleaner": "^1.3.0",
+    "morgan": "^1.9.1",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
