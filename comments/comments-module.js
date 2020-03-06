@@ -4,56 +4,43 @@ const bcrypt = require("bcryptjs");
 
 module.exports = {
   find,
-  findBy,
+  addComment,
+  findCommentsByID,
   getById,
-  addUser,
-  add,
+  update,
   remove,
-  findByUserName,
-  findByCommentsId,
-  findUserByID
+  findByCommentsId
 };
 
 function find() {
-  return db("users").select("id", "username", "email", "name", "password");
+  return db("comments").select("*");
+}
+async function addComment(comment) {
+  const [newComment] = await db("comments")
+    .insert(comment)
+    .returning("*");
+
+  return newComment;
 }
 
-function addUser(user) {
-  const { username, password } = user;
-
-  if (username && password) {
-    const hash = bcrypt.hashSync(password, 8);
-    user.password = hash;
-
-    return db("users")
-      .insert(user, "id")
-      .then(id => findUserByID(id));
-  }
-}
-async function add(user) {
-  const [id] = await db("users").insert(user);
-
-  return findUserByID(id);
-}
-
-function findUserByID([id]) {
-  return db("users")
+function findCommentsByID([id]) {
+  return db("comments")
+    .select("*")
     .where({ id })
     .first();
 }
 
-function findByUserName(username) {
-  return db("users")
-    .where({ username })
-    .first();
-}
-
-function findBy(filter) {
-  return db("users").where(filter);
-}
-
 function getById(id) {
   return db("users").where({ id });
+}
+
+async function update(changes, id) {
+  const [updatedComment] = await db("comments")
+    .where({ id })
+    .update(changes)
+    .returning("*");
+
+  return updatedComment;
 }
 
 function remove(id) {
@@ -84,10 +71,3 @@ function findByCommentsId(id) {
       "c.date"
     );
 }
-// function findUserComments(user_id) {
-//   return db("comments_").where({ user_id });
-// }
-
-// function findByCommentsId(trip_id) {
-//   return db("comments_").where({ trip_id });
-// }

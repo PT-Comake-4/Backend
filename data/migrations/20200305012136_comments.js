@@ -1,5 +1,5 @@
 exports.up = function(knex) {
-  return knex.schema.createTable("comment", tbl => {
+  return knex.schema.createTable("comments", tbl => {
     tbl.increments();
     tbl
       .integer("created_by")
@@ -25,5 +25,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists("comment");
+  return knex.schema.dropTableIfExists("comments");
 };

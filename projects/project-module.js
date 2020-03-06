@@ -3,50 +3,41 @@ const bcrypt = require("bcryptjs");
 
 module.exports = {
   find,
-  findBy,
-  // getById,
   addProject,
-  // add,
-  remove,
-  findByProjectName,
   findProjectByID,
+  findByProjectName,
+  update,
+  getById,
+  remove,
   findByProjectsId
 };
 
 function find() {
-  return db("projects").select(
-    "id",
-    "project_name",
-    "description",
-    "vote",
-    "state"
-  );
+  return db("projects").select("*");
 }
 
-function addProject(project) {
-  const project = req.body;
-  return db("projects")
-    .insert(project, "id")
-    .then(ids => {
-      const [id] = ids;
-      return findProjectByID(id);
-    });
+async function addProject(project) {
+  const [newProject] = await db("projects")
+    .insert(project)
+    .returning("*");
+
+  return newProject;
 }
 
 // async function add(project) {
 //   const [id] = await db("projects").insert(project);
 
-//   return findprojectByID(id);
+//   return findProjectByID(id);
 // }
 
-function findProjectByID([id]) {
-  return db("projects")
-    .where({ id })
-    .first();
+function findProjectByID(id) {
+  return (
+    db("projects")
+      // .select("*")
+      .where({ id })
+      .first()
+  );
 }
-// function getById(id) {
-//   return db("projects").where({ id });
-// }
 
 function findByProjectName(project_name) {
   return db("projects")
@@ -54,17 +45,25 @@ function findByProjectName(project_name) {
     .first();
 }
 
-function findBy(filter) {
-  return db("projects").where(filter);
+async function update(changes, id) {
+  const [updatedProject] = await db("projects")
+    .where({ id })
+    .update(changes)
+    .returning("*");
+
+  return updatedProject;
+}
+function getById(id) {
+  return db("projects").where({ id });
 }
 
 function remove(id) {
   return db("projects")
     .where({ id })
     .del()
-    .then(projects => {
-      if (projects) {
-        return projects;
+    .then(project => {
+      if (project) {
+        return project;
       } else {
         return null;
       }
