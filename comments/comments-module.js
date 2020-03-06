@@ -1,14 +1,73 @@
 const db = require("../data/dbConfig");
 
+const bcrypt = require("bcryptjs");
+
 module.exports = {
-  findByCommentsId,
-  add,
   find,
   findBy,
-  findById,
+  getById,
+  addUser,
+  add,
   remove,
-  update
+  findByUserName,
+  findByCommentsId,
+  findUserByID
 };
+
+function find() {
+  return db("users").select("id", "username", "email", "name", "password");
+}
+
+function addUser(user) {
+  const { username, password } = user;
+
+  if (username && password) {
+    const hash = bcrypt.hashSync(password, 8);
+    user.password = hash;
+
+    return db("users")
+      .insert(user, "id")
+      .then(id => findUserByID(id));
+  }
+}
+async function add(user) {
+  const [id] = await db("users").insert(user);
+
+  return findUserByID(id);
+}
+
+function findUserByID([id]) {
+  return db("users")
+    .where({ id })
+    .first();
+}
+
+function findByUserName(username) {
+  return db("users")
+    .where({ username })
+    .first();
+}
+
+function findBy(filter) {
+  return db("users").where(filter);
+}
+
+function getById(id) {
+  return db("users").where({ id });
+}
+
+function remove(id) {
+  return db("users")
+    .where({ id })
+    .del()
+    .then(users => {
+      if (users) {
+        return users;
+      } else {
+        return null;
+      }
+    });
+}
 
 function findByCommentsId(id) {
   return db("comments as c")
@@ -25,53 +84,10 @@ function findByCommentsId(id) {
       "c.date"
     );
 }
-function find() {
-  return db("comments").select("*");
-}
+// function findUserComments(user_id) {
+//   return db("comments_").where({ user_id });
+// }
 
-function findBy(filter) {
-  return db("comments").where(filter);
-}
-
-function findById(id) {
-  return db("comments")
-    .where({ id })
-    .first();
-}
-
-async function add(comments) {
-  const [newComment] = await db("comments")
-    .insert(comments)
-    .returning("*");
-
-  return newComment;
-}
-
-async function update(changes, id) {
-  const [updatedComment] = await db("comments")
-    .where({ id })
-    .update(changes)
-    .returning("*");
-
-  return updatedComment;
-}
-
-function remove(id) {
-  return db("comments")
-    .where({ id })
-    .del()
-    .then(comments => {
-      if (comments) {
-        return comments;
-      } else {
-        return null;
-      }
-    });
-}
-function findUserComments(user_id) {
-  return db("comments_").where({ user_id });
-}
-
-function findByCommentsId(trip_id) {
-  return db("comments_").where({ trip_id });
-}
+// function findByCommentsId(trip_id) {
+//   return db("comments_").where({ trip_id });
+// }
