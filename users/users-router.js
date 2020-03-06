@@ -4,13 +4,9 @@ const restrict = require("../auth/restrict");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const secrets = require("../secrets/secrets.js");
-// const projectRouter = require("../projects/project-router");
-// const commentsRouter = require("../comments/comments-router");
 
-// router.use("/:id/projects", projectRouter);
-// router.use("/:id/comments", commentsRouter);
-
-router.get("/users", (req, res) => {
+//GET ALL USERS
+router.get("/", (req, res) => {
   authModel
     .find()
     .then(users => {
@@ -22,7 +18,9 @@ router.get("/users", (req, res) => {
         .json({ message: "Check users-router get section", ...err })
     );
 });
-router.get("/users/:id", (req, res) => {
+
+//GET USER BY ID
+router.get("/:id", (req, res) => {
   const { id } = req.params;
 
   authModel
@@ -39,11 +37,23 @@ router.get("/users/:id", (req, res) => {
     });
 });
 
+//GET USER BY USERNAME
+router.get("/name/:username", (req, res) => {
+  console.log(req.params.username);
+  authModel
+    .findByUsername(req.params.username)
+    .then(user => {
+      console.log(user);
+      res.status(200).json(user);
+    })
+    .catch(err => res.status(500).json(err));
+});
+
 router.post("/register", (req, res) => {
-  const u = req.body;
-  if (u.username && u.password) {
+  const user = req.body;
+  if (user.username && user.password) {
     authModel
-      .addUser(u)
+      .addUser(user)
       .then(p => {
         res.status(201).json(p);
       })

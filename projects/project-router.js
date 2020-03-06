@@ -27,6 +27,18 @@ router.get("/:id", (req, res) => {
     .catch(err => res.status(500).json(err));
 });
 
+//GET PROJECT BY PROJECT NAME
+router.get("/pname/:project_name", (req, res) => {
+  console.log(req.params.project_name);
+  authModel
+    .getByIdName(REPLACE(LOWER(req.params.project_name), " ", "-"))
+    .then(projects => {
+      console.log(projects);
+      res.status(200).json(projects);
+    })
+    .catch(err => res.status(500).json(err));
+});
+
 router.get("/users/:id", async (req, res) => {
   try {
     const usersProjects = await projectModel.findUsersProjects(req.params.id);

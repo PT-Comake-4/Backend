@@ -9,7 +9,7 @@ module.exports = {
   addUser,
   add,
   remove,
-  findByUserName,
+  findByUsername,
   findUserByID
 };
 
@@ -41,7 +41,7 @@ function findUserByID([id]) {
     .first();
 }
 
-function findByUserName(username) {
+function findByUsername(username) {
   return db("users")
     .where({ username })
     .first();

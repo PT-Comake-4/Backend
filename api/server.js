@@ -14,7 +14,7 @@ server.get("/", (req, res) => {
 server.use(helmet());
 server.use(express.json());
 
-server.use("/api", UsersRouter);
+server.use("/api/users", UsersRouter);
 server.use("/api/comments", CommentsRouter);
 server.use("/api/projects", ProjectsRouter);
 

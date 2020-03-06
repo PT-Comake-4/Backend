@@ -65,6 +65,13 @@ function getById(id) {
     .first();
 }
 
+function getByIdName(project_name) {
+  return db("projects")
+    .select(REPLACE(LOWER("project_name"), " ", "-"))
+    .where(REPLACE(LOWER({ project_name }), " ", "-"))
+    .first();
+}
+
 function remove(id) {
   return db("projects")
     .where({ id })
