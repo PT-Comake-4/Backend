@@ -3,28 +3,56 @@ const db = require("../data/dbConfig");
 const bcrypt = require("bcryptjs");
 
 module.exports = {
-  find,
-  addComment,
-  findCommentsByID,
-  findUsersComments,
-  findProjectComments,
-  getById,
-  update,
-  remove,
+  find, //
+  // addComment,
+  // add,
+  // findBy,
+  // findCommentsByID,
+  // findUsersComments,
+  findProjectComments, //
+  getById, //
+  // findById,
+  // update,
+  // remove,
   findByCommentsId
 };
 
 function find() {
   return db("comments").select("*");
 }
+
 async function addComment(comment) {
+  try {
+    const [id] = await db("comments").insert(comment);
+    const newComment = await findById(id);
+    return newComment;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function add(comment_id, project_id, created_by, description, vote) {
   const [newComment] = await db("comments")
-    .insert(comment)
+    .insert({ comment_id, project_id, created_by, description, vote })
     .returning("*");
 
   return newComment;
 }
 
+async function findById(id) {
+  try {
+    const comment = await db("comments")
+      .where({ id })
+      .first();
+    if (comment) {
+      return comment;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 function findCommentsByID([id]) {
   return db("comments")
     .select("*")
@@ -43,7 +71,9 @@ function findProjectComments(project_id) {
 function getById(id) {
   return db("comments").where({ id });
 }
-
+function findBy(filter) {
+  return db("comments").where(filter);
+}
 async function update(changes, id) {
   const [updatedComment] = await db("comments")
     .where({ id })
