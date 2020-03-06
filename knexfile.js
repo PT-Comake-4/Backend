@@ -17,7 +17,7 @@ module.exports = {
   staging: {
     client: "sqlite3",
     connection: {
-      database: "my_db",
+      database: "./data/co_make.db3",
       user: "username",
       password: "password"
     },
@@ -37,7 +37,7 @@ module.exports = {
   production: {
     client: "sqlite3",
     connection: {
-      database: "my_db",
+      database: "./data/co_make.db3",
       user: "username",
       password: "password"
     },
